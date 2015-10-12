@@ -5,16 +5,18 @@
 var gulp = require('gulp'),
     browserify = require('gulp-browserify'),
     size = require('gulp-size'),
-    clean = require('gulp-clean');
+    livereload = require('gulp-livereload'),
+    clean = require('gulp-clean'); // migrate to del plugin 
 
 
 // tasks
 
 gulp.task('transform', function () {
-  return gulp.src('./project/static/scripts/jsx/main.js')
-    .pipe(browserify({transform: ['reactify']}))
-    .pipe(gulp.dest('./project/static/scripts/js'))
-    .pipe(size());
+   return gulp.src('./project/static/scripts/jsx/main.js')
+   .pipe(browserify({transform: ['reactify']}))
+   .pipe(gulp.dest('./project/static/scripts/js'))
+   .pipe(livereload())
+   .pipe(size()); 
 });
 
 gulp.task('clean', function () {
@@ -22,7 +24,8 @@ gulp.task('clean', function () {
     .pipe(clean());
 });
 
-gulp.task('default', ['clean'], function () {
+gulp.task('default', ['clean'], function() {
+  livereload.listen();
   gulp.start('transform');
   gulp.watch('./project/static/scripts/jsx/main.js', ['transform']);
 });

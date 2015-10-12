@@ -51,8 +51,26 @@ var countries = [
 ];
 
 React.render(
-  React.createElement(DynamicSearch, {items: countries }),
+  React.createElement(DynamicSearch, {items:  countries }),
   document.getElementById('main')
 );
+
+
+var BarChart = ReactD3.BarChart;
+
+var data = [{
+    label: 'somethingA',
+    values: [{x: 'SomethingA', y: 10}, {x: 'SomethingB', y: 4}, {x: 'SomethingC', y: 3}]
+}];
+
+React.render(
+    React.createElement(BarChart, {
+        data: data, 
+        width: 400, 
+        height: 400, 
+        margin: {top: 10, bottom: 50, left: 50, right: 10}}),
+    document.getElementById('location')
+);
+
 
 },{}]},{},[1])
