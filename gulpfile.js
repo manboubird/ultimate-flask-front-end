@@ -1,31 +1,33 @@
 'use strict';
 
-// requirements
 
-var gulp = require('gulp'),
-    browserify = require('gulp-browserify'),
-    size = require('gulp-size'),
-    livereload = require('gulp-livereload'),
-    clean = require('gulp-clean'); // migrate to del plugin 
+var gulp       = require('gulp'),
+    browserify = require('browserify'),
+    babelify   = require('babelify'),
+    // livereload = require('gulp-livereload'),
+    rimraf     = require('rimraf'),
+    source     = require('vinyl-source-stream');
 
-
-// tasks
-
-gulp.task('transform', function () {
-   return gulp.src('./project/static/scripts/jsx/main.js')
-   .pipe(browserify({transform: ['reactify']}))
-   .pipe(gulp.dest('./project/static/scripts/js'))
-   .pipe(livereload())
-   .pipe(size()); 
+gulp.task('transform', function() {
+  browserify({
+      entries: ['./project/static/scripts/jsx/main.js'],
+      extensions: ['.coffee'], debug: true 
+    })
+    .transform(babelify)
+    .bundle()
+    .on("error", function (err) { console.log("Error : " + err.message); })
+    .pipe(source('main.js'))
+    .pipe(gulp.dest('./project/static/scripts/js/'))
 });
 
-gulp.task('clean', function () {
-  return gulp.src(['./project/static/scripts/js'], {read: false})
-    .pipe(clean());
+
+gulp.task('clean', function (cb) {
+  rimraf('./project/static/scripts/js/*', cb);
 });
 
 gulp.task('default', ['clean'], function() {
-  livereload.listen();
+  // livereload.listen();
   gulp.start('transform');
-  gulp.watch('./project/static/scripts/jsx/main.js', ['transform']);
+  gulp.watch('./project/static/scripts/jsx/*.js', ['transform']);
 });
+
