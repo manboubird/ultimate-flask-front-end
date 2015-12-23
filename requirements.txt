@@ -1,6 +1,7 @@
 Flask==0.10.1
-elasticsearch==1.7.0
 Jinja2==2.7.3
 MarkupSafe==0.23
 Werkzeug==0.10.1
 itsdangerous==0.24
+elasticsearch>=1.0.0,<2.0.0
+Flask-Elasticsearch==0.2.1

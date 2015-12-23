@@ -9,6 +9,7 @@ data/
 node_modules/
 npm-debug.log
 bower_components/
+project/static/scripts/js/*.js
 .module-cache
 .drake/
 drake.log
