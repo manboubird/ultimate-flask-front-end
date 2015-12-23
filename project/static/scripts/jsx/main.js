@@ -1,6 +1,12 @@
-var React = require('react');
+var React       = require('react');
+var ReactRouter = require('react-router');
+var Router      = ReactRouter.Router;
+var Route       = ReactRouter.Route;
+var IndexRoute  = ReactRouter.IndexRoute;
+
+var treeData = [ { text: "Parent 1", nodes: [ { text: "Child 1", nodes: [ { text: "Grandchild 1" }, { text: "Grandchild 2" } ] }, { text: "Child 2" } ] }, { text: "Parent 2" }, { text: "Parent 3" }, { text: "Parent 4" }, { text: "Parent 5" } ];
+
 var TreeView = require('./TreeView');
-var DynamicSearch = require('./DynamicSearch');
 
 // list of countries, defined with JavaScript object literals
 var countries = [
@@ -13,8 +19,37 @@ var countries = [
   {"name": "Spain"}, {"name": "Poland"}, {"name": "Haiti"}
 ];
 
-React.render(
-  <DynamicSearch items={ countries } />,
-  document.getElementById('main')
-);
+var DynamicSearch = require('./DynamicSearch');
+
+// React.render(
+//   <DynamicSearch items={ countries } />,
+//   document.getElementById('main')
+// );
+
+var App = React.createClass({
+  render() {
+    return (
+      <div>
+        <h1>App</h1>
+        {this.props.children}
+      </div>
+    )
+  }
+})
+
+React.render((
+  <Router>
+    <Route path="/" component={App}>
+      <IndexRoute component={DynamicSearch} items={ countries } />
+    </Route>
+  </Router>
+), document.getElementById('main'));
+
+// React.render((
+//   <Router>
+//     <Route path="/" component={App}>
+//       <IndexRoute component={TreeView} items={ treeData } />
+//     </Route>
+//   </Router>
+// ), document.getElementById('main'));
 
