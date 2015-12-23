@@ -1,0 +1,74 @@
+;HIVE_EXEC:=/usr/bin/hive
+
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd)
+
+BASE=$[SCRIPT_DIR]/target
+
+
+;%include ../common-env.drake
+;%include ./es.drake
+
+ELASTICSEARCH_URL:=http://localhost:9200
+ES_IDX_WEATHER_REPORT="$[ELASTICSEARCH_URL]/weather-report"
+
+DATA_DIR_LOCAL=$[BASE]/../../../data
+WETHER_REPORT_DIR=$[DATA_DIR_LOCAL]/weather-report
+
+;%call ../libs/common-methods.drake
+
+file() [eval]
+  echo "$CODE" | tee $OUTPUT | nl
+
+;
+; Data cleansing
+; The data set is donwloaded from http://www.data.jma.go.jp/gmd/risk/obsdl/index.php with params average, min and max tempratures at Tokyo 
+; 
+tokyo.csv <- $[WETHER_REPORT_DIR]/data-tokyo-2015-01-01_2015-01-31.csv
+  echo "prefecture,avg_temperature_date,avg_temperature,max_temperature,max_temperature_time,min_temperature,min_temperature_time" > ${OUTPUT}
+  cat ${INPUT} | nkf -w | sed -n '7,999p' | awk -F"," '{ print "tokyo,"$1","$2","$5","$7","$10","$12 }' >> ${OUTPUT}
+
+tokyo.json <- tokyo.csv
+  cat ${INPUT} | csvjson | jq '.[]' -c > ${OUTPUT} 
+
+;
+; Indexing
+;
+%index <- tokyo.json
+  target="$[ES_IDX_WEATHER_REPORT]/temprature"
+  echo "Start indexing to ${target} with data ${INPUT}"
+  stream2es stdin --target "${target}" < ${INPUT}
+
+;
+; Search
+;
+%search <- search_agg.q
+  target="$[ES_IDX_WEATHER_REPORT]/_search"
+  echo "Search ${target} with ${INPUT}"
+  http GET "${target}" < ${INPUT} | jq . -c
+
+;
+; Query DSLs
+;
+search_agg.q <- [method:file method-mode:append -timecheck]
+  {
+    "query": { "match_all": {} },
+    "aggs": {
+      "pref": {
+        "terms": {
+          "order": {
+            "_term": "asc"
+          },
+          "field": "prefecture",
+          "size": 50
+        },
+        "aggs": {
+          "type": {
+            "terms": {
+              "field": "avg_temperature_date",
+              "size": 10
+            }
+          }
+        }
+      }
+    }
+  }

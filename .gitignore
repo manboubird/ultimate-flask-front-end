@@ -1,11 +1,14 @@
 *.DS_Store
 *.pyc
 *.swp
+*.swo
 .git
-
 env
-
+target/
+data/
 node_modules/
 npm-debug.log
 bower_components/
 .module-cache
+.drake/
+drake.log
