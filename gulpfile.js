@@ -11,7 +11,7 @@ var gulp       = require('gulp'),
 gulp.task('transform', function() {
   browserify({
       entries: ['./project/static/scripts/jsx/main.js'],
-      extensions: ['.coffee'], debug: true 
+      extensions: ['.jsx','js'], debug: true 
     })
     .transform(babelify)
     .bundle()
@@ -28,6 +28,6 @@ gulp.task('clean', function (cb) {
 gulp.task('default', ['clean'], function() {
   // livereload.listen();
   gulp.start('transform');
-  gulp.watch('./project/static/scripts/jsx/*.js', ['transform']);
+  gulp.watch('./project/static/scripts/jsx/**', ['transform']);
 });
 
