@@ -5,9 +5,11 @@ var gulp        = require('gulp'),
     babelify    = require('babelify'),
     rimraf      = require('rimraf'),
     source      = require('vinyl-source-stream'),
+    gutil       = require('gulp-util'),
     browserSync = require('browser-sync');
 var reload      = browserSync.reload;
-var exec        = require('child_process').exec;
+var spawn       = require('child_process').spawn;
+
 
 gulp.task('transform', function() {
   browserify({
@@ -22,29 +24,31 @@ gulp.task('transform', function() {
     .pipe(browserSync.stream());
 });
 
-
 gulp.task('clean', function (cb) {
   rimraf('./project/static/scripts/js/*', cb);
 });
 
-// gulp.task('default', ['clean'], function() {
-//   // livereload.listen();
-//   gulp.start('transform');
-//   gulp.watch('./project/static/scripts/jsx#<{(|*', ['transform']);
-// });
-
-gulp.task('webserver', function() {
-  var proc = exec('python project/app.py');
+gulp.task('webserver', function(cb) {
+  var logPrefix = 'WS: '
+  var server = spawn('python', ['project/app.py']);
+  server.stdout.on('data', function (data) {
+    gutil.log(logPrefix + data);
+  });
+  server.stderr.on('data', function (data) {
+    gutil.log(logPrefix + data.toString('binary').replace(/\n$/, ''));
+  });
+  server.on('exit', function (data) {
+    gutil.log(logPrefix +' webserver is shutdowned. data = ' + data);
+  });
 });
 
-gulp.task('default', ['clean', 'webserver'], function () {
+gulp.task('default', ['clean'], function () {
+  gulp.start('transform', 'webserver');
   browserSync({
-    notify: false,
-    proxy: '127.0.0.1:5000' // the url of webserver task's
+    proxy: '127.0.0.1:5000', // the url of webserver task's
+    open: false,
+    notify: true
   });
-
-  gulp.start('transform');
   gulp.watch('./project/static/scripts/jsx/*', ['transform']);
-  gulp.watch(['./project/static/css/*.css'], reload);
-
+  gulp.watch(['./project/static/css/*.css', './project/templates/*.html'], reload);
 });
