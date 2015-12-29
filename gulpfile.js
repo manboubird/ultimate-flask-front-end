@@ -6,12 +6,13 @@ var gulp        = require('gulp'),
     rimraf      = require('rimraf'),
     source      = require('vinyl-source-stream'),
     gutil       = require('gulp-util'),
+    eslint      = require('gulp-eslint'),
     browserSync = require('browser-sync');
 var reload      = browserSync.reload;
 var spawn       = require('child_process').spawn;
 
 
-gulp.task('transform', function() {
+gulp.task('transform', ['lint'], function() {
   browserify({
       entries: ['./project/static/scripts/jsx/main.js'],
       extensions: ['.jsx','js'], debug: true 
@@ -22,6 +23,13 @@ gulp.task('transform', function() {
     .pipe(source('main.js'))
     .pipe(gulp.dest('./project/static/scripts/js/'))
     .pipe(browserSync.stream());
+});
+
+gulp.task('lint', function () {
+  return gulp.src(['./project/static/scripts/jsx/**','!node_modules/**'])
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
 });
 
 gulp.task('clean', function (cb) {
@@ -49,6 +57,6 @@ gulp.task('default', ['clean'], function () {
     open: false,
     notify: true
   });
-  gulp.watch('./project/static/scripts/jsx/*', ['transform']);
+  gulp.watch('./project/static/scripts/jsx/**', ['transform']);
   gulp.watch(['./project/static/css/*.css', './project/templates/*.html'], reload);
 });
