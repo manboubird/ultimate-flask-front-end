@@ -4,7 +4,6 @@
 import os
 
 from flask import Flask, current_app, render_template, jsonify
-from flask.ext.elasticsearch import FlaskElasticsearch
 
 from config import config
 from core import es, ElasticsearchService
@@ -24,6 +23,7 @@ EsService = ElasticsearchService()
 def index():
     return render_template('index.html')
 
+
 @app.route('/hello')
 def hello():
     return render_template('hello.html')
@@ -33,8 +33,8 @@ def hello():
 def get_facet_reports():
     query = render_template('qdsl/search_agg.q')
     current_app.logger.info("query = " + query)
-    res = EsService.search(index='weather-report', body=query) 
-    return jsonify({ 'data': res })
+    res = EsService.search(index='weather-report', body=query)
+    return jsonify({'data': res})
 
 if __name__ == "__main__":
     app.run(debug=True)
