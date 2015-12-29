@@ -7,6 +7,7 @@ var gulp        = require('gulp'),
     source      = require('vinyl-source-stream'),
     gutil       = require('gulp-util'),
     eslint      = require('gulp-eslint'),
+    mocha       = require('gulp-mocha'),
     browserSync = require('browser-sync');
 var reload      = browserSync.reload;
 var spawn       = require('child_process').spawn;
