@@ -32,6 +32,19 @@ gulp.task('lint', function () {
     .pipe(eslint.failAfterError());
 });
 
+gulp.task('mocha', function() {
+  return gulp.src(['./test/jsx/**/*.js'], { read: false })
+    .pipe(mocha({ reporter: 'list'}))
+    .on('error', gutil.log);
+});
+
+gulp.task('watch-mocha', function () {
+  gulp.watch(
+    ['./project/static/scripts/jsx/**', './test/jsx/**/*.js'],
+    ['mocha']
+  );
+});
+
 gulp.task('clean', function (cb) {
   rimraf('./project/static/scripts/js/*', cb);
 });
