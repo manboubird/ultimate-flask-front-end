@@ -1,16 +1,15 @@
 'use strict';
 
-var gulp        = require('gulp'),
-    browserify  = require('browserify'),
-    babelify    = require('babelify'),
-    rimraf      = require('rimraf'),
-    source      = require('vinyl-source-stream'),
-    gutil       = require('gulp-util'),
-    eslint      = require('gulp-eslint'),
-    mocha       = require('gulp-mocha'),
-    browserSync = require('browser-sync');
-var reload      = browserSync.reload;
-var spawn       = require('child_process').spawn;
+import gulp from 'gulp';
+import browserify from 'browserify';
+import babelify from 'babelify';
+import rimraf from 'rimraf';
+import source from 'vinyl-source-stream';
+import gutil from 'gulp-util';
+import eslint from 'gulp-eslint';
+import mocha from 'gulp-mocha';
+import browserSync, { reload } from 'browser-sync';
+import { spawn } from 'child_process';
 
 
 gulp.task('transform', ['lint'], function() {
@@ -51,8 +50,8 @@ gulp.task('clean', function (cb) {
 });
 
 gulp.task('webserver', function(cb) {
-  var logPrefix = 'WS: '
-  var server = spawn('python', ['project/app.py']);
+  const logPrefix = 'WS: ';
+  let server = spawn('python', ['project/app.py']);
   server.stdout.on('data', function (data) {
     gutil.log(logPrefix + data);
   });
