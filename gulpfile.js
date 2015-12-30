@@ -18,7 +18,7 @@ gulp.task('transform', ['lint'], function() {
       entries: ['./project/static/scripts/jsx/main.js'],
       extensions: ['.jsx','js'], debug: true 
     })
-    .transform(babelify)
+    .transform(babelify, {presets: ["es2015", "react"]})
     .bundle()
     .on("error", function (err) { console.log("Error : " + err.message); })
     .pipe(source('main.js'))

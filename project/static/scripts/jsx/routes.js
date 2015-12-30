@@ -1,15 +1,14 @@
-var React        = require('react'),
-    RouterModule = require('react-router'),
-    // History      = require("react-router/lib/HashHistory").history,
-    Router       = RouterModule.Router,
-    Route        = RouterModule.Route,
-    Redirect     = RouterModule.Redirect;
+'use strict';
 
-var App           = require('./app.js'),
-    TreeMenu      = require('./TreeMenu'),
-    DynamicSearch = require('./DynamicSearch');
+import React from 'react';
+import { Router, Route, Redirect } from 'react-router';
 
-module.exports = (
+import App from './App';
+import TreeMenu from './TreeMenu';
+import DynamicSearch from './DynamicSearch';
+
+
+const routes = (
   <Router>
     <Route component={App}>
       <Redirect from='/' to='/home' />
@@ -18,3 +17,5 @@ module.exports = (
     </Route>
   </Router>
 );
+
+export default routes;

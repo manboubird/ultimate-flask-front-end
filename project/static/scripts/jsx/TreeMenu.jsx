@@ -1,29 +1,30 @@
-var React    = require('react');
-var TreeMenu = require('react-tree-menu').TreeMenu,
-    TreeNode = require('react-tree-menu').TreeNode;
+'use strict';
 
-var MyTreeMenu = React.createClass({
+import React from 'react';
+import { TreeMenu, TreeNode } from 'react-tree-menu';
 
-  getInitialState: function() {
-    return {
+
+class MyTreeMenu extends React.Component {
+
+  constructor() {
+    super();
+    this.state = {
       lastAction1: null,
       lastAction2: null,
       lastAction3: null
     };
-  },
+  }
 
   render() {
-
-    var statefulExample = this._getExamplePanel("Stateful", this._getStatefulTreeExample());
- 
+    let statefulExample = this._getExamplePanel("Stateful", this._getStatefulTreeExample());
     return (
       <div className="col-lg-8"> {statefulExample} </div>
-    )
-  },
+    );
+  }
 
-  _setLastActionState: function (action, col, node) {
+  _setLastActionState(action, col, node) {
 
-    var toggleEvents = ["collapsed", "checked", "selected"];
+    let toggleEvents = ["collapsed", "checked", "selected"];
 
     if (toggleEvents.indexOf(action) >= 0) {
       action += "Changed";
@@ -31,20 +32,19 @@ var MyTreeMenu = React.createClass({
 
     console.log("Controller View received tree menu " + action + " action: " + node.join(" > "));
 
-    var key = "lastAction" + col;
+    let key = "lastAction" + col;
 
-    var mutation = {};
+    let mutation = {};
     mutation[key] = {
       event: action,
       node: node.join(" > "),
       time: new Date().getTime()
     };
 
-    this.setState(mutation)
-  },
+    this.setState(mutation);
+  }
 
-  _getStatefulTreeExample: function () {
-
+  _getStatefulTreeExample() {
     return (
       <TreeMenu
         identifier="id"
@@ -63,20 +63,21 @@ var MyTreeMenu = React.createClass({
           </TreeNode>
         </TreeNode>
       </TreeMenu>
-    );
-  },
-
-  _getExamplePanel: function (title, treeMenuNode) {
-    return <div>
-      <div className="panel panel-default">
-        <div className="panel-heading">{title + " Menu"}</div>
-        <div className="panel-body">
-          {treeMenuNode}
-        </div>
-      </div>
-    </div>;
+    )
   }
 
-});
+  _getExamplePanel(title, treeMenuNode) {
+    return (
+      <div>
+        <div className="panel panel-default">
+          <div className="panel-heading">{title + " Menu"}</div>
+          <div className="panel-body">
+            {treeMenuNode}
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
 
-module.exports = MyTreeMenu;
+export default MyTreeMenu;
