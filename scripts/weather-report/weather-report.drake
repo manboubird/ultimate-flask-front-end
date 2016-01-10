@@ -33,7 +33,12 @@ tokyo.json <- tokyo.csv
 ;
 ; Indexing
 ;
-%index <- tokyo.json
+%create_index <- weather_report_index.json
+  target="$[ES_IDX_WEATHER_REPORT]"
+  echo "Create index  ${target} with ${INPUT}"
+  http PUT "${target}" < ${INPUT} | jq . -c
+
+%index_temprature <- tokyo.json
   target="$[ES_IDX_WEATHER_REPORT]/temprature"
   echo "Start indexing to ${target} with data ${INPUT}"
   stream2es stdin --target "${target}" < ${INPUT}
@@ -45,6 +50,7 @@ tokyo.json <- tokyo.csv
   target="$[ES_IDX_WEATHER_REPORT]/_search"
   echo "Search ${target} with ${INPUT}"
   http GET "${target}" < ${INPUT} | jq . -c
+
 
 ;
 ; Query DSLs
@@ -72,3 +78,30 @@ search_agg.q <- [method:file method-mode:append -timecheck]
       }
     }
   }
+
+weather_report_index.json <- [method:file method-mode:append -timecheck]
+  {
+    "settings": { 
+      "analysis": {
+        "analyzer": {
+          "whitespace_analyzer": { "type": "pattern", "pattern": "\\s+" }
+        }
+      }
+    },
+    "mappings": {
+      "temprature": {
+        "_source": { "enabled": true },
+        "properties": { 
+          "id": { "type": "string", "index": "not_analyzed" },
+          "prefecture": { "type": "string", "index": "analyzed", "analyzer": "whitespace_analyzer" },
+          "avg_temperature_date": { "type": "date", "format": "yyyy/MM/dd||yyyy/MM/dd HH:mm", "index": "not_analyzed" },
+          "avg_temperature": { "type": "float", "index": "not_analyzed" },
+          "max_temperature": { "type": "float", "index": "not_analyzed" },
+          "max_temperature_time": { "type": "date", "format": "yyyy/MM/dd||yyyy/MM/dd HH:mm", "index": "not_analyzed" },
+          "min_temperature": { "type": "float", "index": "not_analyzed" },
+          "min_temperature_time": { "type": "date", "format": "yyyy/MM/dd||yyyy/MM/dd HH:mm", "index": "not_analyzed" }
+        }
+      }
+    }
+  }
+
