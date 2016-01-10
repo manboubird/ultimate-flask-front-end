@@ -1,8 +1,5 @@
-'use strict';
-
 import React from 'react';
 import { Router, Route, Redirect } from 'react-router';
-
 import App from './App';
 import TreeMenu from './TreeMenu';
 import DynamicSearch from './DynamicSearch';

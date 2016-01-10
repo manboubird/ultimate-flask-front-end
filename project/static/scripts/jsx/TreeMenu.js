@@ -1,10 +1,8 @@
-'use strict';
-
-import React from 'react';
+import React, { Component } from 'react';
 import { TreeMenu, TreeNode } from 'react-tree-menu';
 
 
-class MyTreeMenu extends React.Component {
+class MyTreeMenu extends Component {
 
   constructor() {
     super();

@@ -1,9 +1,7 @@
-'use strict';
-
-import React from 'react';
+import React, { Component } from 'react';
 
 
-class DynamicSearch extends React.Component {
+class DynamicSearch extends Component {
 
   // sets initial state
   constructor() {

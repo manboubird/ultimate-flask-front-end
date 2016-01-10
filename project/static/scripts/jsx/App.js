@@ -1,7 +1,6 @@
-'use strict';
-
 import React from 'react';
-import { Link } from 'react-router';
+import { LinkContainer } from 'react-router-bootstrap';
+import { Nav, NavDropdown, MenuItem } from 'react-bootstrap';
 
 
 class App extends React.Component {
@@ -9,10 +8,18 @@ class App extends React.Component {
     return (
       <div>
         <header>
-          <h1>App</h1>
-          <Link to="/home">Dynamic Search</Link>
-          <Link to="/menu">Menu</Link>
-        </header>
+		  		<h1>App</h1>
+		  	</header>
+        <Nav bsStyle="tabs" activeKey={1}>
+          <NavDropdown eventKey={3} title="Experimentals" id="nav-dropdown" >
+            <MenuItem eventKey="3.1">
+              <LinkContainer to={ '/home' }><div>Dynamic Search</div></LinkContainer>
+            </MenuItem>
+            <MenuItem eventKey="3.2">
+              <LinkContainer to={ '/menu' }><div>Menu</div></LinkContainer>
+            </MenuItem>
+          </NavDropdown>
+        </Nav>
         <section>
           {this.props.children}
         </section>
